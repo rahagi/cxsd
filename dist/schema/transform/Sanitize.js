@@ -28,8 +28,8 @@ function sanitizeName(name) {
     };
     name = name
         .replace(/-([a-z])/, capitalize)
-        .replace(/[^0-9A-Za-z]/g, '')
-        .replace(/^[^A-Za-z]+/, '');
+        .replace(/[^_0-9A-Za-z]/g, '')
+        .replace(/^[^_A-Za-z]+/, '');
     if (reserved.hasOwnProperty(name))
         name = '_' + name;
     return (name);
