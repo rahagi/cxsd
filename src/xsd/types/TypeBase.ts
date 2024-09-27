@@ -1,15 +1,14 @@
 // This file is part of cxsd, copyright (c) 2015-2016 BusFaster Ltd.
 // Released under the MIT license, see LICENSE.
 
-import {Base, BaseClass} from './Base';
-import {State} from '../State';
-import {QName} from '../QName';
-import {NamedTypeMember} from '../Scope';
 import * as schema from '../../schema';
+import { QName } from '../QName';
+import { State } from '../State';
+import { Base, BaseClass } from './Base';
 
 export class TypeBase extends Base {
 	init(state: State) {
-		if(!this.scope) this.scope = state.getScope();
+		if (!this.scope) this.scope = state.getScope();
 
 		this.qName = this.define(state, 'type');
 		// Set type of parent element, in case it has none.
@@ -22,17 +21,17 @@ export class TypeBase extends Base {
 	getOutType(schemaContext: schema.Context): schema.Type {
 		var outType = this.outType;
 
-		if(!outType) {
+		if (!outType) {
 			outType = new schema.Type(this.name);
 
-			if(this.scope) {
+			if (this.scope) {
 				schemaContext.copyNamespace(this.scope.namespace).addType(outType);
 			}
 
 			this.outType = outType;
 		}
 
-		return(outType);
+		return (outType);
 	}
 
 	/** Find parent type inheriting from a base type. */
@@ -43,19 +42,25 @@ export class TypeBase extends Base {
 		/** Maximum iterations in case type inheritance forms a loop. */
 		var iter = 100;
 
-		while(--iter) {
+		while (--iter) {
 			type = next;
 
-			if(!(type instanceof TypeBase)) break;
-			else if(type instanceof base) return(type);
-			else if(breakAtContent && type.scope && (
-				type.scope.dumpTypes('attribute') ||
-				type.scope.dumpTypes('attributeGroup')
-			)) break;
-			else next = type.parent;
+			if (!(type instanceof TypeBase)) break;
+			else if (type instanceof base) return (type);
+			else {
+				const typedType = type as TypeBase
+				if (breakAtContent && typedType.scope && (
+					typedType.scope.dumpTypes('attribute') ||
+					typedType.scope.dumpTypes('attributeGroup'))
+				) {
+					break
+				} else {
+					next = typedType.parent
+				}
+			}
 		}
 
-		return(null);
+		return (null);
 	}
 
 	getListType() {
@@ -64,19 +69,19 @@ export class TypeBase extends Base {
 		/** Maximum iterations in case type inheritance forms a loop. */
 		var iter = 100;
 
-		while(--iter) {
+		while (--iter) {
 			type = next;
 
-			if(!(type instanceof TypeBase)) break;
+			if (!(type instanceof TypeBase)) break;
 			else {
 				var listType = type.scope && type.scope.dumpTypes('list');
 
-				if(listType) return(listType);
+				if (listType) return (listType);
 				else next = type.parent;
 			}
 		}
 
-		return(null);
+		return (null);
 	}
 
 	id: string = null;

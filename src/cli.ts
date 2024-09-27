@@ -3,23 +3,22 @@
 
 import * as cmd from 'commander';
 
-import {Cache, FetchOptions} from 'cget';
-import * as cxml from 'cxml';
+import { Cache, FetchOptions } from 'cget';
 
-import {Context} from './xsd/Context';
-import {Namespace} from './xsd/Namespace';
-import {Loader} from './xsd/Loader';
-import {exportNamespace} from './xsd/Exporter';
 import * as schema from './schema';
-import {AddImports} from './schema/transform/AddImports';
-import {Sanitize} from './schema/transform/Sanitize';
+import { AddImports } from './schema/transform/AddImports';
+import { Sanitize } from './schema/transform/Sanitize';
+import { Context } from './xsd/Context';
+import { exportNamespace } from './xsd/Exporter';
+import { Loader } from './xsd/Loader';
+import { Namespace } from './xsd/Namespace';
 
 type _ICommand = typeof cmd;
 interface ICommand extends _ICommand {
 	arguments(spec: string): ICommand;
 }
 
-((cmd.version(require('../package.json').version) as ICommand)
+const command = cmd.createCommand("cxsd")
 	.arguments('<url>')
 	.description('XSD download and conversion tool')
 	.option('-H, --force-host <host>', 'Fetch all xsd files from <host>\n    (original host is passed in GET parameter "host")')
@@ -29,9 +28,8 @@ interface ICommand extends _ICommand {
 	.option('-j, --out-js <path>', 'Output JavaScript modules under <path>')
 	.action(handleConvert)
 	.parse(process.argv)
-);
 
-if(process.argv.length < 3) cmd.help();
+if (process.argv.length < 3) command.help();
 
 function handleConvert(urlRemote: string, opts: { [key: string]: any }) {
 	var schemaContext = new schema.Context();
@@ -39,9 +37,9 @@ function handleConvert(urlRemote: string, opts: { [key: string]: any }) {
 
 	var fetchOptions: FetchOptions = {};
 
-	if(opts['forceHost']) {
+	if (opts['forceHost']) {
 		fetchOptions.forceHost = opts['forceHost'];
-		if(opts['forcePort']) fetchOptions.forcePort = opts['forcePort'];
+		if (opts['forcePort']) fetchOptions.forcePort = opts['forcePort'];
 
 		Cache.patchRequest();
 	}
@@ -77,7 +75,7 @@ function handleConvert(urlRemote: string, opts: { [key: string]: any }) {
 			).then(() =>
 				new schema.exporter.TS(spec, tsCache).exec()
 			);
-		} catch(err) {
+		} catch (err) {
 			console.error(err);
 			console.log('Stack:');
 			console.error(err.stack);

@@ -1,8 +1,8 @@
 node_modules/
 typings/
 cache/
-*.js
-*.d.ts
+# *.js
+# *.d.ts
 *.log.*
 *.log
 *.tgz
