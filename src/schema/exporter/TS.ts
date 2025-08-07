@@ -132,7 +132,7 @@ export class TS extends Exporter {
 		} else return(outTypes);
 	}
 
-	writeMember(ref: MemberRef, isGlobal: boolean) {
+	writeMember(ref: MemberRef, isGlobal: boolean, prefix = '') {
 		var output: string[] = [];
 		var member = ref.member;
 		var comment = member.comment;
@@ -147,7 +147,13 @@ export class TS extends Exporter {
 			output.push('\n');
 		}
 
-		output.push(indent + ref.safeName);
+    let safeName: string;
+    if (/[@!%&*()]/.test(prefix)) {
+      safeName = indent + `'${prefix}${ref.safeName}'`;
+    } else {
+      safeName = indent + prefix + ref.safeName;
+    }
+		output.push(safeName);
 		if(ref.min == 0) output.push('?');
 		output.push(': ');
 
@@ -180,7 +186,7 @@ export class TS extends Exporter {
 			var parentType = type.parent;
 
 			for(var attribute of type.attributeList) {
-				var outAttribute = this.writeMember(attribute, false);
+				var outAttribute = this.writeMember(attribute, false, '@');
 				if(outAttribute) outMemberList.push(outAttribute);
 			}
 

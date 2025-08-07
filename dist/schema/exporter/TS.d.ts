@@ -11,7 +11,7 @@ export declare class TS extends Exporter {
     writeTypeRef(type: Type, namePrefix: string): string;
     writeParents(parentDef: string, mixinList: Type[]): string;
     writeTypeList(ref: MemberRef): string;
-    writeMember(ref: MemberRef, isGlobal: boolean): string;
+    writeMember(ref: MemberRef, isGlobal: boolean, prefix?: string): string;
     writeTypeContent(type: Type): string;
     writeType(type: Type): string;
     writeSubstitutions(type: Type, refList: MemberRef[], output: string[]): void;

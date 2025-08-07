@@ -130,7 +130,8 @@ var TS = /** @class */ (function (_super) {
         else
             return (outTypes);
     };
-    TS.prototype.writeMember = function (ref, isGlobal) {
+    TS.prototype.writeMember = function (ref, isGlobal, prefix) {
+        if (prefix === void 0) { prefix = ''; }
         var output = [];
         var member = ref.member;
         var comment = member.comment;
@@ -145,7 +146,14 @@ var TS = /** @class */ (function (_super) {
             output.push(TS.formatComment(indent, comment));
             output.push('\n');
         }
-        output.push(indent + ref.safeName);
+        var safeName;
+        if (/[@!%&*()]/.test(prefix)) {
+            safeName = indent + "'".concat(prefix).concat(ref.safeName, "'");
+        }
+        else {
+            safeName = indent + prefix + ref.safeName;
+        }
+        output.push(safeName);
         if (ref.min == 0)
             output.push('?');
         output.push(': ');
@@ -179,7 +187,7 @@ var TS = /** @class */ (function (_super) {
             var parentType = type.parent;
             for (var _i = 0, _a = type.attributeList; _i < _a.length; _i++) {
                 var attribute = _a[_i];
-                var outAttribute = this.writeMember(attribute, false);
+                var outAttribute = this.writeMember(attribute, false, '@');
                 if (outAttribute)
                     outMemberList.push(outAttribute);
             }
