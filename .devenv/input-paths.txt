@@ -1,0 +1,5 @@
+/home/rhg/src/work/rg/cxsd/.devenv/flake.json
+/home/rhg/src/work/rg/cxsd/.devenv.flake.nix
+/home/rhg/src/work/rg/cxsd/devenv.lock
+/home/rhg/src/work/rg/cxsd/devenv.nix
+/home/rhg/src/work/rg/cxsd/devenv.yaml
